@@ -487,6 +487,7 @@ prioritized below the top modules
 A flat synthesis is one where there isn't ay hierarchy of modules, called modules are expanded and one module is synthesized from the fundamentals of the gates
 
 Below is the example of a flat-synthesized version of multiple_modules.v 
+
 ![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/d92ece17-276e-4a91-8bb4-d990ae3612bf)
 
 No hierarchies.
