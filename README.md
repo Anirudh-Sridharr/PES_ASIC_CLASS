@@ -352,4 +352,164 @@ blt a3, a2, loop
 add a0, a4, zero
 ret
 ```
+##**sky130RTLDesignAndSynthesisWorkshop**:-
+###_**DAY 1:**_ 
+Introduction to Verilog RTL design and Synthesis 
+SKY130RTL D1SK1 - Introduction to open-source simulator iverilog 
+SKY130RTL D1SK1 L1 Introduction to iverilog design test bench 
+
+The testbench: 
+We need tools to test whether a design is working as desired. Hence a testbench simulates a design's working before we step into having it implemented.
+
+Working of a testbench:
+The testbench does not have inputs or outputs, it stimulates the input nodes of the design to see how the output behaves. Only the design has i/o ports
+
+Simulators work only based on changes in the input, the simulator won't act if there's no change in the input
+ So Iverilog takes in the testbench and the design to give a .vcd file, [vcd stands for value change dump] which produces waveforms on gtkwave. 
+
+ ###LAB1:
+ So we clone this repository: ```https://github.com/kunalg123/sky130RTLDesignAndSynthesisWorkshop```
+ and see that there's folders that have standard cell libraries in my_lib/lib and standard cell verilog models for the libraries in my_lib/verilog_model. We can store our  
+ verilog files in the verilog_files directory
+
+ ![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/31f56937-120c-44fd-9d41-96620b231d45)
+
+ ###LAB2:
+ Working with Iverilog and gtkwave
+Iverilog designfile.v testbench.v  is how you run iverilog on it
+Then an a.out gets generated, run that on the  terminal
+You'll have a testbench.vcd after running a.out, then use: gtkwave testbench.vcd to open gtkwave, drag and drop inputs and outputs
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/fb5a67b8-3b03-40ed-affa-fba4bc581517)
+
+On the waveform viewer, the pointer without the arrow shows us transitions of the selected signal, you can zoom by clicking a region and then clicking zoom etc.![image]
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/89880ec4-96b3-4667-9d01-ec57db29eb5c)
+
+We can pull the verilog file using gedit or vim or leafpad and edit the necessary
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/871becaa-b01e-4960-9f64-47a8a3975eba)
+
+testbench for the mux: 
+```
+timescale Ins / Ips 
+module tb_good_mux; 
+/  Inputs 
+reg i0,i1,sel;
+// Outputs 
+wire y; 
+// Instantiate the Unit Under Test (UUT) 
+good mux uut(
+.sel(sel), 
+.i0(i0), 
+.il(il) )
+initial begin 
+$dumpfile(good_mux. vcd"); 
+$dumpvars(@,tb good mux) ; 
+// Initialize Inputs 
+sel = 0; 
+I0 =0
+il = 0; 
+#300 $finish; 
+end  
+always #75 sel = ~sel
+always #10 i0 = ~i0
+always #55 i1 =~i1
+endmodule 
+```
+```always #75 sel = ~sel``` statement means every 75ns, sel switches or the bit flips.
+
+###_Introduction to yosys_
+Yosys is the synthesizer used in this course, RTL to netlist
+Design + .lib file goes into yosys, netlist comes out, we use read_verilog(Design) and read_liberty(.lib) to generate write_verilog(netlist)
+
+Use the same tb.v file and the netlist.v file in iverilog, same way we did for the original rtl and then observe gtkwave, if same output, then we have a good synthesis, else 
+the synthesis has gone wrong.
+
+So just like a program gets translated to the assembly language through an assembler, the synthesizer translates our given verilog code into some standard form called the 
+netlist
+
+The .lib file is a shelf with logic units etc as needed. AND, OR and NOT are enough, there are versions with different speeds for the gates and ofc there are more standard 
+gates to make life simple
+
+The different speeds part plays an important role in delays, holding values, pipelining ability and all that, including optimizing setup, hold and clock to q delays according 
+to the clock dictating the circuit. 
+
+ ###LAB3:
+ Now  we're using yosys:
+```yosys``` is the command used to activate yosys,
+
+Then use ```read_liberty -lib ~/desktop/sky130RTLDesignandSynthesisWorkshop/lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+to import all the standard logic units needed for synthesis.
+
+Use ```read_verilog filename.v``` to process the file into the synthesizer
+
+Then use ```synth -top  topmodulename```
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/bedc676c-ebc6-433c-b932-ccea145cc1ab)
+
+The verilog file being synthesized:
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/be67bc02-67a9-4d0c-9e6c-d89b130be2a1)
+
+Then we use abc ```-liberty ~/desktop/sky130RTLDesignandSynthesisWorkshop/lib/sky130_fd_sc_hd__tt_025C_1v80.lib``` 
+
+Then we can type in ```show``` to see the schematic
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/90246db7-ea49-48c1-8e51-07bf7d148ddd)
+
+We can generate the netlist by keying ```write_verilog filename_netlist.v```
+On using ```!gvim filename_netlist.v we can see the netlist```
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/3d470b35-3f4c-4d5f-aefc-d2f63bb6ce76)
+
+Use ```write_verilog -noattr filename_netlist.v``` for a simpler netlist!
+
+###_Introduction to timing libraries and .lib_
+PVT - Process, Voltage and temperature
+These are the variations visible in a cmos transistor
+
+Use :```gedit  ~/desktop/sky130RTLDesignandSynthesisWorkshop/lib/sky130_fd_sc_hd__tt_025C_1v80.lib```
+
+Observe: sky130_fd_sc_hd__tt_025C_1v80.lib
+025C stands for temperature, tt stands for typical - it is a sort of timing or speed grade. These variable parameters ensure that circuits work in all conditions of 
+temperature, a hot summer or a cold winter. So a .lib specifies all factors that may affect a transistor that must be taken into account for practical purposes.
+
+Here we see different gate modules with different transistor parameters as width, area, temperature, power etc. Whatever suits our purpose can be used
+
+ ###LAB4:
+
+ HIERARCHICAL SYNTHESIS:
+in multiple_modules.v file under the ~/Desktop/sky130RTLDesignAndSynthesisWorkshop/verilog_files, if we use the standard synthesis techniques we see that the submodules are 
+prioritized below the top modules
+
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/3db5ca72-169b-4b9f-be00-54a146ef1e11)
+
+A flat synthesis is one where there isn't ay hierarchy of modules, called modules are expanded and one module is synthesized from the fundamentals of the gates
+
+Below is the example of a flat-synthesized version of multiple_modules.v 
+![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/d92ece17-276e-4a91-8bb4-d990ae3612bf)
+
+No hierarchies.
+
+The above can be synthesized alone with top as submodule1 etc
+You can synthesize any module alone in a verilog file or all together
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+ 
+
 
