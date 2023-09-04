@@ -367,14 +367,14 @@ The testbench does not have inputs or outputs, it stimulates the input nodes of 
 Simulators work only based on changes in the input, the simulator won't act if there's no change in the input
  So Iverilog takes in the testbench and the design to give a .vcd file, [vcd stands for value change dump] which produces waveforms on gtkwave. 
 
- ###LAB1:
+ ### LAB1:
  So we clone this repository: ```https://github.com/kunalg123/sky130RTLDesignAndSynthesisWorkshop```
  and see that there's folders that have standard cell libraries in my_lib/lib and standard cell verilog models for the libraries in my_lib/verilog_model. We can store our  
  verilog files in the verilog_files directory
 
  ![image](https://github.com/Anirudh-Sridharr/PES_ASIC_CLASS/assets/140473803/31f56937-120c-44fd-9d41-96620b231d45)
 
- ###LAB2:
+ ### LAB2:
  Working with Iverilog and gtkwave
 Iverilog designfile.v testbench.v  is how you run iverilog on it
 Then an a.out gets generated, run that on the  terminal
@@ -419,7 +419,7 @@ endmodule
 ```
 ```always #75 sel = ~sel``` statement means every 75ns, sel switches or the bit flips.
 
-###_Introduction to yosys_
+### _Introduction to yosys_
 Yosys is the synthesizer used in this course, RTL to netlist
 Design + .lib file goes into yosys, netlist comes out, we use read_verilog(Design) and read_liberty(.lib) to generate write_verilog(netlist)
 
@@ -435,7 +435,7 @@ gates to make life simple
 The different speeds part plays an important role in delays, holding values, pipelining ability and all that, including optimizing setup, hold and clock to q delays according 
 to the clock dictating the circuit. 
 
- ###LAB3:
+ ### LAB3:
  Now  we're using yosys:
 ```yosys``` is the command used to activate yosys,
 
@@ -464,7 +464,7 @@ On using ```!gvim filename_netlist.v we can see the netlist```
 
 Use ```write_verilog -noattr filename_netlist.v``` for a simpler netlist!
 
-###_Introduction to timing libraries and .lib_
+### _Introduction to timing libraries and .lib_
 PVT - Process, Voltage and temperature
 These are the variations visible in a cmos transistor
 
@@ -476,7 +476,7 @@ temperature, a hot summer or a cold winter. So a .lib specifies all factors that
 
 Here we see different gate modules with different transistor parameters as width, area, temperature, power etc. Whatever suits our purpose can be used
 
- ###LAB4:
+ ### LAB4:
 
  HIERARCHICAL SYNTHESIS:
 in multiple_modules.v file under the ~/Desktop/sky130RTLDesignAndSynthesisWorkshop/verilog_files, if we use the standard synthesis techniques we see that the submodules are 
