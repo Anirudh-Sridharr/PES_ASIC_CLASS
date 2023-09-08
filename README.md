@@ -352,8 +352,8 @@ blt a3, a2, loop
 add a0, a4, zero
 ret
 ```
-##**sky130RTLDesignAndSynthesisWorkshop**:-
-###_**DAY 1:**_ 
+## **sky130RTLDesignAndSynthesisWorkshop**:-
+### _**DAY 1:**_ 
 Introduction to Verilog RTL design and Synthesis 
 SKY130RTL D1SK1 - Introduction to open-source simulator iverilog 
 SKY130RTL D1SK1 L1 Introduction to iverilog design test bench 
